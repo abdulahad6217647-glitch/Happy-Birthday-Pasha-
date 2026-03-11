@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Happy Birthday Jigar! 🎂</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins', sans-serif;}
+
+body{
+  background: #000;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+  touch-action: none;
+}
+
+/* LOCK SCREEN - RESPONSIVE */
+.lockScreen{
+  position: absolute;
+  inset: 0;
+  background: #050505;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.lockScreen h2 {
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  text-shadow: 0 0 10px #00f2fe;
+  font-size: clamp(1rem, 5vw, 1.8rem);
+  text-align: center;
+}
+
+.lockScreen input{
+  background: transparent;
+  border: 2px solid #00f2fe;
+  padding: 12px 20px;
+  border-radius: 50px;
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+  width: 100%;
+  max-width: 280px;
+  cursor: pointer; /* Pointer cursor set */
+}
+
+/* CURTAINS */
+.curtain{
+  position: absolute;
+  top: 0;
+  width: 50.5%; /* Slight overlap to avoid gap */
+  height: 100%;
+  z-index: 40;
+  background: linear-gradient(90deg, #111 0%, #222 50%, #111 100%);
+  transition: transform 2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.left{ left: 0; }
+.right{ right: 0; }
+.openLeft{ transform: translateX(-100%); }
+.openRight{ transform: translateX(100%); }
+
+/* MAIN TEXT - ADAPTIVE SIZE & POSITION (Centered Vertically, Right Horizontally) */
+.container{
+  position: absolute;
+  top: 50%;
+  right: 5%; /* Thora stylish lagne ke liye right side se margin */
+  transform: translateY(-50%); /* Vertical centering */
+  z-index: 5;
+  width: auto; /* Width auto taake text length ke hisab se adjust ho */
+  max-width: 90%;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: flex-end; /* Horizontal alignment right par */
+}
+
+.line{
+  font-size: clamp(1.5rem, 7vw, 4rem); /* Text size thora bara kiya gaya hai */
+  font-weight: 900;
+  background: linear-gradient(to left, #00f2fe, #4facfe, #00f2fe);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 3s linear infinite;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 1s all ease-in-out;
+  text-align: right; /* Text text-align right */
+  word-wrap: break-word;
+  direction: rtl; /* Right-to-Left direction for stylish look */
+  letter-spacing: -1px; /* Thora modern feel ke liye tight letter spacing */
+}
+
+.show{ opacity: 1; transform: translateY(0); }
+
+@keyframes gradient {
+  to { background-position: 200% center; }
+}
+
+canvas{ position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<div class="lockScreen" id="lockScreen">
+  <h2>Guess the Code (15/03) 🎂</h2>
+  <input type="text" id="passInput" placeholder="Enter Code..." inputmode="text">
+</div>
+
+<div class="curtain left" id="leftCurtain"></div>
+<div class="curtain right" id="rightCurtain"></div>
+
+<div class="container" id="textContainer">
+  <div class="line" id="textLine"></div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+let started = false;
+
+// "Online" removed from all lines
+const lines = [
+  "Oye Legend! Sunn.. 📣",
+  "Happy Birthday Mere Bhai! 🎂",
+  "Wese to hum kabhi face to face mile nahi..",
+  "Lekin tere se baat kar ke kabhi laga hi nahi ke hum door hain.",
+  "Log kehte hain dosti fake hoti hai..",
+  "Unko kya pata humne kitni bak-bak ki hai! 😂",
+  "Tu door sahi, par mere best friends ki list mein hai.",
+  "Allah tujhe bohat saari real-life khushiyan de,",
+  "Aur teri internet speed hamesha fast rahe! ⚡",
+  "Tu ek bohat saaf dil ka insan hai (bas dimaag thora kam hai) 🧠❌",
+  "In Sha Allah ek din real mein bhi milenge aur tabaahi machayenge!",
+  "Tab tak screen ke us paar hi party enjoy kar! 🥂",
+  "Have a blast today, mere bhai!",
+  "Once again, Happy Birthday Legend! ❤️",
+  "— Tera Sacha Dost"
+];
+
+let i = 0;
+const input = document.getElementById("passInput");
+const textLine = document.getElementById("textLine");
+const textContainer = document.getElementById("textContainer");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+input.addEventListener("input", () => {
+  const cleanVal = input.value.replace(/[\/\s-]/g, '');
+  if(cleanVal === "1503" && !started){
+    started = true;
+    unlock();
+  }
+});
+
+function unlock(){
+  document.getElementById("lockScreen").style.display = "none";
+  document.getElementById("leftCurtain").classList.add("openLeft");
+  document.getElementById("rightCurtain").classList.add("openRight");
+  
+  textContainer.style.opacity = "1";
+  showLines();
+  animateSparkles();
+}
+
+function showLines(){
+  if(i >= lines.length) {
+      i = 0; // Restart if you want loop, or just stop here.
+  }
+  textLine.classList.remove("show");
+  setTimeout(() => {
+    textLine.innerHTML = lines[i];
+    textLine.classList.add("show");
+    let displayTime = Math.max(3500, lines[i].length * 90); /* Thora zyada display time */
+    i++;
+    setTimeout(showLines, displayTime);
+  }, 700);
+}
+
+let particles = [];
+function animateSparkles(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  if(Math.random() < 0.1){
+    createExplosion(Math.random()*canvas.width, Math.random()*canvas.height);
+  }
+  
+  particles.forEach((p, index) => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= 0.02;
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2);
+    ctx.fill();
+    if(p.alpha <= 0) particles.splice(index, 1);
+  });
+  requestAnimationFrame(animateSparkles);
+}
+
+function createExplosion(x, y){
+  const color = `hsl(${Math.random()*360}, 100%, 60%)`;
+  const count = window.innerWidth < 600 ? 25 : 45; // Fewer particles on mobile
+  for(let j=0; j<count; j++){
+    particles.push({
+      x, y,
+      vx: (Math.random()-0.5) * (window.innerWidth < 600 ? 4 : 7),
+      vy: (Math.random()-0.5) * (window.innerWidth < 600 ? 4 : 7),
+      alpha: 1,
+      color
+    });
+  }
+}
+</script>
+</body>
+</html>
