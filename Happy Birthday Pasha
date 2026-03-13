@@ -22,7 +22,7 @@ body{
   touch-action: none;
 }
 
-/* LOCK SCREEN - RESPONSIVE */
+/* LOCK SCREEN */
 .lockScreen{
   position: absolute;
   inset: 0;
@@ -57,14 +57,13 @@ body{
   box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
   width: 100%;
   max-width: 280px;
-  cursor: pointer; /* Pointer cursor set */
 }
 
 /* CURTAINS */
 .curtain{
   position: absolute;
   top: 0;
-  width: 50.5%; /* Slight overlap to avoid gap */
+  width: 50.5%;
   height: 100%;
   z-index: 40;
   background: linear-gradient(90deg, #111 0%, #222 50%, #111 100%);
@@ -75,23 +74,23 @@ body{
 .openLeft{ transform: translateX(-100%); }
 .openRight{ transform: translateX(100%); }
 
-/* MAIN TEXT - ADAPTIVE SIZE & POSITION (Centered Vertically, Right Horizontally) */
+/* MAIN TEXT - CENTERED VERTICALLY, RIGHT ALIGNED */
 .container{
   position: absolute;
   top: 50%;
-  right: 5%; /* Thora stylish lagne ke liye right side se margin */
-  transform: translateY(-50%); /* Vertical centering */
+  right: 8%; 
+  transform: translateY(-50%);
   z-index: 5;
-  width: auto; /* Width auto taake text length ke hisab se adjust ho */
-  max-width: 90%;
+  width: auto;
+  max-width: 85%;
   opacity: 0;
   pointer-events: none;
   display: flex;
-  justify-content: flex-end; /* Horizontal alignment right par */
+  justify-content: flex-end;
 }
 
 .line{
-  font-size: clamp(1.5rem, 7vw, 4rem); /* Text size thora bara kiya gaya hai */
+  font-size: clamp(1.6rem, 8vw, 4.2rem);
   font-weight: 900;
   background: linear-gradient(to left, #00f2fe, #4facfe, #00f2fe);
   background-size: 200% auto;
@@ -101,13 +100,28 @@ body{
   opacity: 0;
   transform: translateY(20px);
   transition: 1s all ease-in-out;
-  text-align: right; /* Text text-align right */
+  text-align: right;
   word-wrap: break-word;
-  direction: rtl; /* Right-to-Left direction for stylish look */
-  letter-spacing: -1px; /* Thora modern feel ke liye tight letter spacing */
+  direction: rtl;
+  letter-spacing: -1px;
 }
 
 .show{ opacity: 1; transform: translateY(0); }
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+  .container {
+    right: 0;
+    left: 0;
+    padding: 0 20px;
+    justify-content: center;
+    width: 100%;
+  }
+  .line {
+    text-align: center;
+    font-size: clamp(1.4rem, 10vw, 2.5rem);
+  }
+}
 
 @keyframes gradient {
   to { background-position: 200% center; }
@@ -135,7 +149,6 @@ canvas{ position: absolute; inset: 0; z-index: 1; pointer-events: none; }
 <script>
 let started = false;
 
-// "Online" removed from all lines
 const lines = [
   "Oye Legend! Sunn.. 📣",
   "Happy Birthday Mere Bhai! 🎂",
@@ -188,13 +201,13 @@ function unlock(){
 
 function showLines(){
   if(i >= lines.length) {
-      i = 0; // Restart if you want loop, or just stop here.
+      i = 0; 
   }
   textLine.classList.remove("show");
   setTimeout(() => {
     textLine.innerHTML = lines[i];
     textLine.classList.add("show");
-    let displayTime = Math.max(3500, lines[i].length * 90); /* Thora zyada display time */
+    let displayTime = Math.max(3500, lines[i].length * 90); 
     i++;
     setTimeout(showLines, displayTime);
   }, 700);
@@ -224,7 +237,7 @@ function animateSparkles(){
 
 function createExplosion(x, y){
   const color = `hsl(${Math.random()*360}, 100%, 60%)`;
-  const count = window.innerWidth < 600 ? 25 : 45; // Fewer particles on mobile
+  const count = window.innerWidth < 600 ? 20 : 40;
   for(let j=0; j<count; j++){
     particles.push({
       x, y,
@@ -238,3 +251,4 @@ function createExplosion(x, y){
 </script>
 </body>
 </html>
+
